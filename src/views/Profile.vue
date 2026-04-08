@@ -45,8 +45,7 @@
         <div class="flex items-center justify-between gap-4">
           <h2 class="text-lg font-bold text-gray-900">个人中心</h2>
           <div class="flex space-x-4">
-            <button type="button" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-xl hover:bg-gray-300 hover:scale-105 transition-all duration-200">保存</button>
-            <button type="button" class="bg-[#FF9F1C] text-white px-4 py-2 rounded-xl hover:bg-[#FFB347] hover:scale-105 transition-all duration-200">修改</button>
+            <button type="button" class="bg-[#FF9F1C] text-white px-4 py-2 rounded-xl hover:bg-[#FFB347] hover:scale-105 transition-all duration-200">保存修改</button>
           </div>
         </div>
       </div>
@@ -94,8 +93,8 @@
                         : 'border-gray-200 hover:border-orange-200'
                     ]"
                   >
-                    <h4 class="font-semibold mb-2">{{ type.name }}</h4>
-                    <p class="text-sm text-gray-600">{{ type.description }}</p>
+                    <h4 class="font-semibold mb-2 text-gray-900">{{ type.name }}</h4>
+                    <p class="text-sm text-gray-700">{{ type.description }}</p>
                   </div>
                 </div>
               </div>
@@ -120,7 +119,7 @@
                     <input
                       v-model="profile.name"
                       type="text"
-                      class="w-full px-4 py-2 border border-gray-100 rounded-xl focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500"
+                      class="w-full px-4 py-2 border border-gray-100 rounded-xl focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500 text-gray-900"
                     >
                   </div>
                   <div>
@@ -128,7 +127,7 @@
                     <textarea
                       v-model="profile.bio"
                       rows="4"
-                      class="w-full px-4 py-2 border border-gray-100 rounded-xl focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500"
+                      class="w-full px-4 py-2 border border-gray-100 rounded-xl focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500 text-gray-900"
                     ></textarea>
                   </div>
                   <div class="text-sm text-gray-500">
@@ -146,7 +145,7 @@
                     <input
                       v-model="profile.website"
                       type="text"
-                      class="w-full px-4 py-2 border border-gray-100 rounded-xl focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500"
+                      class="w-full px-4 py-2 border border-gray-100 rounded-xl focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500 text-gray-900"
                       placeholder="https://yourwebsite.com"
                     >
                   </div>
@@ -155,7 +154,7 @@
                     <input
                       v-model="profile.weibo"
                       type="text"
-                      class="w-full px-4 py-2 border border-gray-100 rounded-xl focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500"
+                      class="w-full px-4 py-2 border border-gray-100 rounded-xl focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500 text-gray-900"
                       placeholder="@你的微博账号"
                     >
                   </div>
@@ -164,7 +163,7 @@
                     <input
                       v-model="profile.wechat"
                       type="text"
-                      class="w-full px-4 py-2 border border-gray-100 rounded-xl focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500"
+                      class="w-full px-4 py-2 border border-gray-100 rounded-xl focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500 text-gray-900"
                       placeholder="your_wechat_id"
                     >
                   </div>
@@ -173,22 +172,136 @@
             </div>
 
             <!-- Member Plans Section -->
-            <div v-show="activeMenu === '会员方案'" class="bg-white rounded-lg shadow p-6">
-              <h3 class="text-lg font-semibold text-gray-900 mb-4">会员方案</h3>
-              <p class="text-gray-600">选择适合您的会员计划，获得更多功能和权益。</p>
-              <div class="mt-4 space-y-3">
-                <div class="p-4 border border-[#FF9F1C] rounded-lg">
-                  <h4 class="font-semibold">高级会员</h4>
-                  <p class="text-sm text-gray-600">¥99/月</p>
-                  <button class="bg-[#FF9F1C] text-white px-4 py-2 rounded-lg mt-2 hover:bg-[#FFB347] transition-colors">升级</button>
+            <div v-show="activeMenu === '会员方案'" class="space-y-6">
+              <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">会员方案</h3>
+                <p class="text-gray-600 mb-6">选择适合您的会员计划，获得更多功能和权益。</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <!-- Free Plan -->
+                  <div class="p-6 border border-gray-200 rounded-lg hover:border-[#FF9F1C] transition-colors">
+                    <h4 class="font-semibold text-gray-900 mb-2">免费版</h4>
+                    <p class="text-2xl font-bold text-gray-900 mb-1">¥0</p>
+                    <p class="text-sm text-gray-600 mb-4">每月</p>
+                    <ul class="text-sm text-gray-600 space-y-1 mb-4">
+                      <li>• 每月10张图片生成</li>
+                      <li>• 基础模型访问</li>
+                      <li>• 社区支持</li>
+                    </ul>
+                    <button class="w-full bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors">当前计划</button>
+                  </div>
+                  <!-- Personal Plan -->
+                  <div class="p-6 border border-[#FF9F1C] rounded-lg bg-orange-50">
+                    <h4 class="font-semibold text-gray-900 mb-2">个人版</h4>
+                    <p class="text-2xl font-bold text-gray-900 mb-1">¥29</p>
+                    <p class="text-sm text-gray-600 mb-4">每月</p>
+                    <ul class="text-sm text-gray-600 space-y-1 mb-4">
+                      <li>• 每月500张图片生成</li>
+                      <li>• 所有基础模型</li>
+                      <li>• 优先支持</li>
+                      <li>• 高级滤镜</li>
+                    </ul>
+                    <button class="w-full bg-[#FF9F1C] text-white px-4 py-2 rounded-lg hover:bg-[#FFB347] transition-colors">升级</button>
+                  </div>
+                  <!-- Pro Plan -->
+                  <div class="p-6 border border-gray-200 rounded-lg hover:border-[#FF9F1C] transition-colors">
+                    <h4 class="font-semibold text-gray-900 mb-2">专业版</h4>
+                    <p class="text-2xl font-bold text-gray-900 mb-1">¥99</p>
+                    <p class="text-sm text-gray-600 mb-4">每月</p>
+                    <ul class="text-sm text-gray-600 space-y-1 mb-4">
+                      <li>• 无限制图片生成</li>
+                      <li>• 所有高级模型</li>
+                      <li>• 商业使用许可</li>
+                      <li>• API访问</li>
+                      <li>• 专属客服</li>
+                    </ul>
+                    <button class="w-full bg-[#FF9F1C] text-white px-4 py-2 rounded-lg hover:bg-[#FFB347] transition-colors">升级</button>
+                  </div>
+                  <!-- Enterprise Plan -->
+                  <div class="p-6 border border-gray-200 rounded-lg hover:border-[#FF9F1C] transition-colors">
+                    <h4 class="font-semibold text-gray-900 mb-2">企业版</h4>
+                    <p class="text-2xl font-bold text-gray-900 mb-1">¥299</p>
+                    <p class="text-sm text-gray-600 mb-4">每月</p>
+                    <ul class="text-sm text-gray-600 space-y-1 mb-4">
+                      <li>• 团队协作功能</li>
+                      <li>• 私有模型训练</li>
+                      <li>• 企业级安全</li>
+                      <li>• 定制集成</li>
+                      <li>• 专属架构师</li>
+                    </ul>
+                    <button class="w-full bg-[#FF9F1C] text-white px-4 py-2 rounded-lg hover:bg-[#FFB347] transition-colors">联系销售</button>
+                  </div>
                 </div>
               </div>
             </div>
 
             <!-- Billing Section -->
-            <div v-show="activeMenu === '账单管理'" class="bg-white rounded-lg shadow p-6">
-              <h3 class="text-lg font-semibold text-gray-900 mb-4">账单管理</h3>
-              <p class="text-gray-600">管理您的订阅和账单信息。</p>
+            <div v-show="activeMenu === '账单管理'" class="space-y-6">
+              <!-- Current Subscription -->
+              <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">当前订阅</h3>
+                <div class="flex items-center justify-between">
+                  <div>
+                    <p class="font-semibold text-gray-900">个人版会员</p>
+                    <p class="text-sm text-gray-600">¥29/月，下次续费：2026年5月1日</p>
+                  </div>
+                  <button class="bg-[#FF9F1C] text-white px-4 py-2 rounded-lg hover:bg-[#FFB347] transition-colors">管理订阅</button>
+                </div>
+              </div>
+
+              <!-- Payment Methods -->
+              <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">支付方式</h3>
+                <div class="space-y-3">
+                  <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                    <div class="flex items-center space-x-3">
+                      <span class="text-2xl">💳</span>
+                      <div>
+                        <p class="font-semibold text-gray-900">**** **** **** 1234</p>
+                        <p class="text-sm text-gray-600">Visa 信用卡</p>
+                      </div>
+                    </div>
+                    <button class="text-[#FF9F1C] hover:text-[#FFB347] transition-colors">编辑</button>
+                  </div>
+                  <button class="w-full bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors">添加新支付方式</button>
+                </div>
+              </div>
+
+              <!-- Billing History -->
+              <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">账单历史</h3>
+                <div class="space-y-3">
+                  <div class="flex items-center justify-between py-3 border-b border-gray-100">
+                    <div>
+                      <p class="font-semibold text-gray-900">个人版会员</p>
+                      <p class="text-sm text-gray-600">2026年4月1日</p>
+                    </div>
+                    <div class="text-right">
+                      <p class="font-semibold text-gray-900">¥29.00</p>
+                      <button class="text-[#FF9F1C] hover:text-[#FFB347] transition-colors text-sm">下载发票</button>
+                    </div>
+                  </div>
+                  <div class="flex items-center justify-between py-3 border-b border-gray-100">
+                    <div>
+                      <p class="font-semibold text-gray-900">个人版会员</p>
+                      <p class="text-sm text-gray-600">2026年3月1日</p>
+                    </div>
+                    <div class="text-right">
+                      <p class="font-semibold text-gray-900">¥29.00</p>
+                      <button class="text-[#FF9F1C] hover:text-[#FFB347] transition-colors text-sm">下载发票</button>
+                    </div>
+                  </div>
+                  <div class="flex items-center justify-between py-3">
+                    <div>
+                      <p class="font-semibold text-gray-900">个人版会员</p>
+                      <p class="text-sm text-gray-600">2026年2月1日</p>
+                    </div>
+                    <div class="text-right">
+                      <p class="font-semibold text-gray-900">¥29.00</p>
+                      <button class="text-[#FF9F1C] hover:text-[#FFB347] transition-colors text-sm">下载发票</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
