@@ -40,7 +40,7 @@
     </aside>
 
     <!-- Right Top Actions -->
-    <div class="fixed top-4 left-0 right-0 z-10 px-4 sm:px-6 lg:px-8">
+    <div class="fixed top-4 left-20 right-4 z-10">
       <div class="bg-white/80 backdrop-blur-sm border border-gray-200/70 rounded-[32px] p-4 shadow-lg">
         <div class="flex items-center justify-between gap-4">
           <h2 class="text-lg font-bold text-gray-900">生成页面</h2>

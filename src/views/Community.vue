@@ -40,18 +40,19 @@
     </aside>
 
     <!-- Right Top Actions -->
-    <div class="fixed top-4 left-0 right-0 z-10 px-4 sm:px-6 lg:px-8">
+    <div class="fixed top-4 left-20 right-4 z-10">
       <div class="bg-white/80 backdrop-blur-sm border border-gray-200/70 rounded-[32px] p-4 shadow-lg">
-        <div class="flex flex-col gap-4">
-          <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-            <h2 class="text-lg font-bold text-gray-900">灵感社区</h2>
+        <div class="flex flex-col items-center gap-4">
+          <h2 class="text-lg font-bold text-gray-900 text-center">灵感社区</h2>
+          <div class="w-full max-w-3xl">
             <input
               type="text"
               placeholder="搜索模版、提示词或艺术家..."
-              class="w-full lg:max-w-md px-4 py-2 rounded-xl border border-gray-100 bg-white text-gray-900 shadow-sm focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500"
+              class="w-full px-4 py-2 rounded-xl border border-gray-100 bg-white text-gray-900 shadow-sm focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500"
             />
           </div>
-          <div class="flex flex-wrap gap-2">
+          <div class="w-full max-w-3xl">
+            <div class="flex flex-wrap gap-2 justify-start">
             <button 
               v-for="category in categories" 
               :key="category"
@@ -69,6 +70,7 @@
         </div>
       </div>
     </div>
+    </div>
 
     <!-- Main Content -->
     <main class="flex-1 ml-20">
@@ -81,6 +83,10 @@
               <div class="relative group aspect-square overflow-hidden">
                 <img :src="work.image" :alt="work.title" class="w-full h-full object-cover hover:scale-105 transition-all duration-300 cursor-pointer">
                 <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300"></div>
+                <div class="absolute inset-0 flex flex-col items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                  <button class="bg-green-500 text-white px-5 py-2 rounded-full text-sm font-semibold hover:bg-green-600 transition">查看详情</button>
+                  <button class="bg-white/40 backdrop-blur-md text-gray-900 px-5 py-2 rounded-full text-sm font-semibold hover:bg-white/60 transition">复制提示词</button>
+                </div>
               </div>
               <div class="p-4">
                 <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ work.title }}</h3>

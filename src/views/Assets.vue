@@ -40,16 +40,10 @@
     </aside>
 
     <!-- Right Top Actions -->
-    <div class="fixed top-4 left-0 right-0 z-10 px-4 sm:px-6 lg:px-8">
+    <div class="fixed top-4 left-20 right-4 z-10">
       <div class="bg-white/80 backdrop-blur-sm border border-gray-200/70 rounded-[32px] p-4 shadow-lg">
-        <div class="grid gap-4 lg:grid-cols-[220px_minmax(0,1fr)] items-center">
-          <div class="space-y-3">
-            <h2 class="text-lg font-bold text-gray-900">我的资产</h2>
-            <div class="space-y-2">
-              <button class="w-full text-left px-4 py-2 rounded-xl bg-white text-gray-900 border border-gray-200 hover:bg-gray-50 transition-all duration-200">所有图片</button>
-              <button class="w-full text-left px-4 py-2 rounded-xl bg-white text-gray-900 border border-gray-200 hover:bg-gray-50 transition-all duration-200">小组空间</button>
-            </div>
-          </div>
+        <div class="flex items-center justify-between gap-4">
+          <h2 class="text-lg font-bold text-gray-900">我的资产</h2>
           <div class="flex justify-end items-start gap-4">
             <button type="button" class="flex items-center space-x-2 bg-white text-gray-700 border border-gray-200 px-4 py-2 rounded-xl hover:bg-gray-50 transition-all duration-200">
               <span>📁</span>
@@ -70,24 +64,48 @@
         <div class="px-4 py-6 sm:px-0">
 
           <!-- Folders and Files -->
-          <div class="space-y-6">
-            <div v-for="(items, folderName) in assetFolders" :key="folderName">
-              <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ folderName }}</h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div v-for="item in items" :key="item.id" class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
-                  <div class="relative group aspect-square overflow-hidden">
-                    <img :src="item.preview" :alt="item.name" class="w-full h-full object-cover hover:scale-105 transition-all duration-300 cursor-pointer">
-                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300"></div>
-                  </div>
-                  <div class="p-4">
-                    <h4 class="font-semibold text-gray-900 mb-2 truncate">{{ item.name }}</h4>
-                    <div class="flex justify-between items-center text-xs text-gray-500">
-                      <span>{{ item.date }}</span>
-                      <span v-if="item.size">{{ item.size }}</span>
+          <div class="grid gap-6 lg:grid-cols-[220px_minmax(0,1fr)]">
+            <aside class="bg-white rounded-[32px] border border-gray-200/70 p-4 shadow-lg">
+              <div class="space-y-3">
+                <button
+                  @click="activeSection = '所有图片'"
+                  :class="[
+                    'w-full text-left px-4 py-3 rounded-2xl font-medium transition-all duration-200',
+                    activeSection === '所有图片' ? 'bg-[#FF9F1C] text-white' : 'bg-white text-gray-900 border border-gray-200 hover:bg-gray-50'
+                  ]"
+                >
+                  所有图片
+                </button>
+                <button
+                  @click="activeSection = '小组空间'"
+                  :class="[
+                    'w-full text-left px-4 py-3 rounded-2xl font-medium transition-all duration-200',
+                    activeSection === '小组空间' ? 'bg-[#FF9F1C] text-white' : 'bg-white text-gray-900 border border-gray-200 hover:bg-gray-50'
+                  ]"
+                >
+                  小组空间
+                </button>
+              </div>
+            </aside>
+            <div class="space-y-6">
+              <div v-for="(items, folderName) in assetFolders" :key="folderName">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ folderName }}</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div v-for="item in items" :key="item.id" class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <div class="relative group aspect-square overflow-hidden">
+                      <img :src="item.preview" :alt="item.name" class="w-full h-full object-cover hover:scale-105 transition-all duration-300 cursor-pointer">
+                      <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300"></div>
                     </div>
-                    <div class="flex space-x-2 mt-3">
-                      <button class="flex-1 bg-[#FF9F1C] text-white px-3 py-1 rounded-lg text-xs hover:bg-[#FFB347] transition-colors">编辑</button>
-                      <button class="flex-1 bg-gray-100 text-gray-700 px-3 py-1 rounded-lg text-xs hover:bg-gray-200 transition-colors">删除</button>
+                    <div class="p-4">
+                      <h4 class="font-semibold text-gray-900 mb-2 truncate">{{ item.name }}</h4>
+                      <div class="flex justify-between items-center text-xs text-gray-500">
+                        <span>{{ item.date }}</span>
+                        <span v-if="item.size">{{ item.size }}</span>
+                      </div>
+                      <div class="flex space-x-2 mt-3">
+                        <button class="flex-1 bg-[#FF9F1C] text-white px-3 py-1 rounded-lg text-xs hover:bg-[#FFB347] transition-colors">编辑</button>
+                        <button class="flex-1 bg-gray-100 text-gray-700 px-3 py-1 rounded-lg text-xs hover:bg-gray-200 transition-colors">删除</button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -110,6 +128,8 @@ interface AssetItem {
   size?: string
   preview: string
 }
+
+const activeSection = ref('所有图片')
 
 const assetFolders = ref<Record<string, AssetItem[]>>({
   '人像系列': [
