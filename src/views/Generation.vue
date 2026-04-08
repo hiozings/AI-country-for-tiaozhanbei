@@ -5,7 +5,7 @@
       <router-link 
         to="/" 
         class="group flex flex-col items-center"
-        :class="{ 'bg-[#FF9F1C] rounded-lg p-3': $route.name === 'Generation' }"
+        :class="{ 'bg-[#FF9F1C] rounded-xl p-3': $route.name === 'Generation' }"
       >
         <span class="text-2xl">✏️</span>
         <span class="text-xs text-gray-600 group-hover:text-[#FF9F1C] mt-2 transition-colors duration-200 text-center">创作</span>
@@ -14,7 +14,7 @@
       <router-link 
         to="/community" 
         class="group flex flex-col items-center hover:scale-105 transition-transform duration-200"
-        :class="{ 'bg-[#FF9F1C] rounded-lg p-3': $route.name === 'Community' }"
+        :class="{ 'bg-[#FF9F1C] rounded-xl p-3': $route.name === 'Community' }"
       >
         <span class="text-2xl">👥</span>
         <span class="text-xs text-gray-600 group-hover:text-[#FF9F1C] mt-2 transition-colors duration-200 text-center">社区</span>
@@ -23,7 +23,7 @@
       <router-link 
         to="/assets" 
         class="group flex flex-col items-center hover:scale-105 transition-transform duration-200"
-        :class="{ 'bg-[#FF9F1C] rounded-lg p-3': $route.name === 'Assets' }"
+        :class="{ 'bg-[#FF9F1C] rounded-xl p-3': $route.name === 'Assets' }"
       >
         <span class="text-2xl">🎨</span>
         <span class="text-xs text-gray-600 group-hover:text-[#FF9F1C] mt-2 transition-colors duration-200 text-center">资产</span>
@@ -32,7 +32,7 @@
       <router-link 
         to="/profile" 
         class="group flex flex-col items-center hover:scale-105 transition-transform duration-200"
-        :class="{ 'bg-[#FF9F1C] rounded-lg p-3': $route.name === 'Profile' }"
+        :class="{ 'bg-[#FF9F1C] rounded-xl p-3': $route.name === 'Profile' }"
       >
         <span class="text-2xl">👤</span>
         <span class="text-xs text-gray-600 group-hover:text-[#FF9F1C] mt-2 transition-colors duration-200 text-center">我的</span>
@@ -40,39 +40,35 @@
     </aside>
 
     <!-- Right Top Actions -->
-    <div class="fixed top-4 right-4 z-10 flex space-x-4">
-      <button type="button" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 hover:scale-105 transition-all duration-200">历史记录</button>
-      <button type="button" class="bg-[#FF9F1C] text-white px-4 py-2 rounded-md hover:bg-[#FFB347] hover:scale-105 transition-all duration-200">开通会员</button>
+    <div class="fixed top-4 left-0 right-0 z-10 px-4 sm:px-6 lg:px-8">
+      <div class="bg-white/80 backdrop-blur-sm border border-gray-200/70 rounded-[32px] p-4 shadow-lg">
+        <div class="flex items-center justify-between gap-4">
+          <h2 class="text-lg font-bold text-gray-900">生成页面</h2>
+          <div class="flex space-x-4">
+            <button type="button" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-xl hover:bg-gray-300 hover:scale-105 transition-all duration-200">历史记录</button>
+            <button type="button" class="bg-green-500 text-white px-4 py-2 rounded-xl hover:bg-green-600 hover:scale-105 transition-all duration-200">开通会员</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Main Content -->
     <main class="flex-1 ml-20">
-      <!-- Top Navigation Bar -->
-      <nav class="bg-white shadow-sm border-b">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="flex items-center h-16">
-            <h1 class="text-xl font-bold text-gray-900">智绘乡野</h1>
-          </div>
-        </div>
-      </nav>
-
       <!-- Page Content -->
-      <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 pt-20">
         <div class="px-4 py-6 sm:px-0">
-          <h2 class="text-2xl font-bold text-gray-900 mb-6">生成页面</h2>
 
           <!-- Prompt Input Section -->
           <div class="bg-white shadow rounded-lg p-6 mb-8">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">提示词输入</h3>
+            <h3 class="text-lg font-medium text-gray-900 mb-4">输入提示词描述你的灵感</h3>
             <div class="space-y-4">
               <div>
-                <label class="block text-sm font-medium text-gray-700">提示词</label>
-                <textarea v-model="form.prompt" rows="5" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-gray-900 px-3 py-2" placeholder="输入提示词描述你的灵感"></textarea>
+                <textarea v-model="form.prompt" rows="5" class="mt-1 block w-full rounded-xl border border-gray-100 shadow-sm focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500 text-gray-900 px-3 py-2" placeholder="一幅宁静的山景，日落时分，超写实风格..."></textarea>
               </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700">反向提示词</label>
-                <input v-model="form.negativePrompt" type="text" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-gray-900 px-3 py-2" placeholder="输入反向提示词">
-              </div>
+            </div>
+            <div class="flex justify-between items-center mt-4">
+              <button type="button" @click="generateImage" class="bg-[#FF9F1C] text-white px-4 py-2 rounded-xl hover:bg-[#FFB347] hover:scale-105 transition-all duration-200">立即生成</button>
+              <div class="text-sm text-gray-600">剩余点数：250</div>
             </div>
           </div>
 
@@ -83,16 +79,22 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label class="block text-sm font-medium text-gray-700">模型选择</label>
-                <select v-model="form.model" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-gray-900 px-3 py-2 bg-white">
-                  <option value="model1">模型1</option>
-                  <option value="model2">模型2</option>
+                <select v-model="form.model" class="mt-1 block w-full rounded-xl border border-gray-100 shadow-sm focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500 text-gray-900 px-3 py-2 bg-white">
+                  <option value="dalle3">DALL-E 3</option>
+                  <option value="midjourney">Midjourney V</option>
+                  <option value="sdxl">Stable Diffusion XL</option>
+                  <option value="flux">Flux Pro</option>
                 </select>
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700">风格预设</label>
-                <select v-model="form.style" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-gray-900 px-3 py-2 bg-white">
-                  <option value="style1">风格1</option>
-                  <option value="style2">风格2</option>
+                <select v-model="form.style" class="mt-1 block w-full rounded-xl border border-gray-100 shadow-sm focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500 text-gray-900 px-3 py-2 bg-white">
+                  <option value="realism">写实风格</option>
+                  <option value="art">艺术风格</option>
+                  <option value="anime">动漫风格</option>
+                  <option value="3d">3D渲染</option>
+                  <option value="oil">油画风格</option>
+                  <option value="watercolor">水彩风格</option>
                 </select>
               </div>
               <div>
@@ -103,10 +105,10 @@
                     :key="ratio.value"
                     @click="form.aspectRatio = ratio.value"
                     :class="[
-                      'px-3 py-2 rounded-md border transition-all duration-200',
+                      'px-3 py-2 rounded-xl transition-all duration-200',
                       form.aspectRatio === ratio.value 
-                        ? 'bg-[#FF9F1C] text-white border-[#FF9F1C]' 
-                        : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                        ? 'bg-[#FF9F1C] text-white border border-[#FF9F1C]' 
+                        : 'bg-white text-gray-700 hover:bg-gray-50'
                     ]"
                   >
                     {{ ratio.label }}
@@ -115,14 +117,12 @@
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700">随机种子（可选）</label>
-                <input v-model="form.seed" type="number" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-gray-900 px-3 py-2 bg-white">
+                <input v-model="form.seed" type="number" class="mt-1 block w-full rounded-xl border border-gray-100 shadow-sm focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500 text-gray-900 px-3 py-2 bg-white">
               </div>
             </div>
-            <div class="flex justify-between items-center">
-              <div class="text-sm text-gray-600">剩余点数：250</div>
-              <div class="flex space-x-4">
-                <button type="submit" class="bg-[#FF9F1C] text-white px-4 py-2 rounded-md hover:bg-[#FFB347] hover:scale-105 transition-all duration-200">立即生成</button>
-              </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">反向提示词</label>
+              <input v-model="form.negativePrompt" type="text" class="mt-1 block w-full rounded-xl border border-gray-100 shadow-sm focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500 text-gray-900 px-3 py-2" placeholder="输入反向提示词">
             </div>
           </form>
         </div>
@@ -131,10 +131,12 @@
         <div class="bg-white shadow rounded-lg p-6">
           <h3 class="text-lg font-medium text-gray-900 mb-4">最近生成</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div v-for="image in recentImages" :key="image.id" class="rounded-lg overflow-hidden relative group aspect-square">
-              <img :src="image.url" :alt="image.description" class="w-full h-full object-cover hover:scale-105 transition-all duration-300 cursor-pointer">
-              <!-- Download button with glassmorphism effect -->
-              <button class="absolute bottom-8 left-4 right-4 bg-white/30 backdrop-blur-md text-white px-4 py-2 rounded-md transition-all duration-200 opacity-0 group-hover:opacity-100 hover:bg-white/50 hover:scale-105 font-medium">下载</button>
+            <div v-for="image in recentImages" :key="image.id" class="rounded-xl overflow-hidden shadow-lg">
+              <div class="relative group aspect-square">
+                <img :src="image.url" :alt="image.description" class="w-full h-full object-cover hover:scale-105 transition-all duration-300 cursor-pointer">
+                <!-- Download button with glassmorphism effect -->
+                <button class="absolute bottom-4 left-4 right-4 bg-white/30 backdrop-blur-md text-white px-4 py-2 rounded-xl transition-all duration-200 opacity-0 group-hover:opacity-100 hover:bg-white/50 hover:scale-105 font-medium">下载</button>
+              </div>
               <div class="bg-gray-50 p-4">
                 <p class="text-sm text-gray-600 mb-2">{{ image.description }}</p>
                 <p class="text-xs text-gray-400">{{ image.time }}</p>
