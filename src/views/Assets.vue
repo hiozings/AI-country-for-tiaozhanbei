@@ -90,21 +90,19 @@
             <div class="space-y-6">
               <div v-for="(items, folderName) in assetFolders" :key="folderName">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ folderName }}</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <div v-for="item in items" :key="item.id" class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
-                    <div class="relative group aspect-square overflow-hidden">
-                      <img :src="item.preview" :alt="item.name" class="w-full h-full object-cover hover:scale-105 transition-all duration-300 cursor-pointer">
-                      <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300"></div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div v-for="item in items" :key="item.id" class="rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 bg-white">
+                    <div class="relative overflow-hidden">
+                      <img :src="item.preview" :alt="item.name" class="w-full aspect-square object-cover transition-all duration-300 hover:scale-105 cursor-pointer block">
                     </div>
-                    <div class="p-4">
-                      <h4 class="font-semibold text-gray-900 mb-2 truncate">{{ item.name }}</h4>
-                      <div class="flex justify-between items-center text-xs text-gray-500">
+                    <div class="p-4 space-y-2 text-xs text-gray-500">
+                      <div class="flex justify-between items-center">
                         <span>{{ item.date }}</span>
-                        <span v-if="item.size">{{ item.size }}</span>
+                        <span>{{ item.size }}</span>
                       </div>
-                      <div class="flex space-x-2 mt-3">
-                        <button class="flex-1 bg-[#FF9F1C] text-white px-3 py-1 rounded-lg text-xs hover:bg-[#FFB347] transition-colors">编辑</button>
-                        <button class="flex-1 bg-gray-100 text-gray-700 px-3 py-1 rounded-lg text-xs hover:bg-gray-200 transition-colors">删除</button>
+                      <div class="flex justify-between items-center text-gray-500">
+                        <span class="flex items-center gap-1">👍 {{ item.likes }}</span>
+                        <span class="flex items-center gap-1">💬 {{ item.comments }}</span>
                       </div>
                     </div>
                   </div>
@@ -120,61 +118,33 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import imgAsset01 from '../img/1775659070206.jpeg'
+import imgAsset02 from '../img/1775659074810.jpeg'
+import imgAsset03 from '../img/1775659079565.jpeg'
+import imgAsset04 from '../img/1775659083309.jpeg'
 
 interface AssetItem {
   id: number
   name: string
-  date: string
-  size?: string
   preview: string
+  date: string
+  size: string
+  likes: number
+  comments: number
 }
 
 const activeSection = ref('所有图片')
 
 const assetFolders = ref<Record<string, AssetItem[]>>({
-  '人像系列': [
-    {
-      id: 1,
-      name: '优雅人像.png',
-      date: '4月6日',
-      size: '2.4 MB',
-      preview: 'https://images.unsplash.com/photo-1603132789551-47b97377046e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwb3J0cmFpdCUyMHdvbWFuJTIwZWxlZ2FudHxlbnwxfHx8fDE3NzU0NzU0OTR8MA&ixlib=rb-4.1.0&q=80&w=1080'
-    },
-    {
-      id: 2,
-      name: '龙之幻想.png',
-      date: '4月5日',
-      size: '3.1 MB',
-      preview: 'https://images.unsplash.com/photo-1610926597998-fc7f2c1b89b0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkcmFnb24lMjBmYW50YXN5JTIwYXJ0fGVufDF8fHx8MTc3NTUxOTY3OXww&ixlib=rb-4.1.0&q=80&w=1080'
-    }
-  ],
-  '奇幻收藏': [
-    {
-      id: 3,
-      name: '电影级灯光提示词',
-      date: '4月4日',
-      preview: 'https://images.unsplash.com/photo-1652876256405-3902cc201b22?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhcmNoaXRlY3R1cmUlMjBtb2Rlcm4lMjBidWlsZGluZ3xlbnwxfHx8fDE3NzU1MDQ0MzB8MA&ixlib=rb-4.1.0&q=80&w=1080'
-    },
-    {
-      id: 4,
-      name: '建筑场景.png',
-      date: '4月3日',
-      size: '1.8 MB',
-      preview: 'https://images.unsplash.com/photo-1652876256405-3902cc201b22?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhcmNoaXRlY3R1cmUlMjBtb2Rlcm4lMjBidWlsZGluZ3xlbnwxfHx8fDE3NzU1MDQ0MzB8MA&ixlib=rb-4.1.0&q=80&w=1080'
-    },
-    {
-      id: 5,
-      name: '奇幻提示词模版',
-      date: '4月2日',
-      preview: 'https://images.unsplash.com/photo-1680201540929-4fd82ca3add0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx1bmRlcndhdGVyJTIwb2NlYW4lMjBjcmVhdHVyZXN8ZW58MXx8fHwxNzc1NTY4MTMxfDA&ixlib=rb-4.1.0&q=80&w=1080'
-    },
-    {
-      id: 6,
-      name: '深海世界.png',
-      date: '4月1日',
-      size: '2.7 MB',
-      preview: 'https://images.unsplash.com/photo-1680201540929-4fd82ca3add0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx1bmRlcndhdGVyJTIwb2NlYW4lMjBjcmVhdHVyZXN8ZW58MXx8fHwxNzc1NTY4MTMxfDA&ixlib=rb-4.1.0&q=80&w=1080'
-    }
+  '我的图片': [
+    { id: 1, name: '优雅人像', preview: imgAsset01, date: '4月6日', size: '2.4 MB', likes: 128, comments: 6 },
+    { id: 2, name: '静谧山坡', preview: imgAsset02, date: '4月5日', size: '3.1 MB', likes: 94, comments: 13 },
+    { id: 3, name: '古建风情', preview: imgAsset03, date: '4月4日', size: '1.8 MB', likes: 76, comments: 8 },
+    { id: 4, name: '河畔小屋', preview: imgAsset04, date: '4月3日', size: '2.0 MB', likes: 101, comments: 11 },
+    { id: 5, name: '日光庭院', preview: 'https://images.unsplash.com/photo-1603132789551-47b97377046e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080', date: '4月2日', size: '2.7 MB', likes: 89, comments: 7 },
+    { id: 6, name: '山间石屋', preview: 'https://images.unsplash.com/photo-1610926597998-fc7f2c1b89b0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080', date: '4月1日', size: '2.9 MB', likes: 113, comments: 15 },
+    { id: 7, name: '古巷木屋', preview: 'https://images.unsplash.com/photo-1652876256405-3902cc201b22?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080', date: '3月31日', size: '2.1 MB', likes: 67, comments: 5 },
+    { id: 8, name: '江边田园', preview: 'https://images.unsplash.com/photo-1680201540929-4fd82ca3add0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080', date: '3月30日', size: '3.0 MB', likes: 142, comments: 18 }
   ]
 })
 </script>
