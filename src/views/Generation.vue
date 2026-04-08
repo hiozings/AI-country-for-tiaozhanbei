@@ -60,18 +60,18 @@
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700">反向提示词</label>
-              <input v-model="form.negativePrompt" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+              <input v-model="form.negativePrompt" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-gray-900">
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700">提示词</label>
-              <textarea v-model="form.prompt" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="输入提示词描述你的灵感"></textarea>
+              <textarea v-model="form.prompt" rows="5" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-gray-900" placeholder="输入提示词描述你的灵感"></textarea>
             </div>
             <div class="flex justify-between items-center">
               <div class="text-sm text-gray-600">剩余点数：250</div>
               <div class="flex space-x-4">
-                <button type="button" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300">历史记录</button>
-                <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">开通会员</button>
-                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">立即生成</button>
+                <button type="button" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 hover:scale-105 transition-all duration-200">历史记录</button>
+                <button type="button" class="bg-[#FF9F1C] text-white px-4 py-2 rounded-md hover:bg-[#FFB347] hover:scale-105 transition-all duration-200">开通会员</button>
+                <button type="submit" class="bg-[#FF9F1C] text-white px-4 py-2 rounded-md hover:bg-[#FFB347] hover:scale-105 transition-all duration-200">立即生成</button>
               </div>
             </div>
           </form>
@@ -82,10 +82,10 @@
           <h3 class="text-lg font-medium text-gray-900 mb-4">最近生成</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div v-for="image in recentImages" :key="image.id" class="bg-gray-50 rounded-lg p-4">
-              <img :src="image.url" :alt="image.description" class="w-full h-48 object-cover rounded-md mb-4">
+              <img :src="image.url" :alt="image.description" class="w-full h-48 object-cover rounded-md mb-4 hover:scale-105 transition-all duration-300 cursor-pointer">
               <p class="text-sm text-gray-600 mb-2">{{ image.description }}</p>
               <p class="text-xs text-gray-400 mb-4">{{ image.time }}</p>
-              <button class="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600">下载</button>
+              <button class="bg-[#FF9F1C] text-white px-3 py-1 rounded text-sm hover:bg-[#FFB347] hover:scale-105 transition-all duration-200">下载</button>
             </div>
           </div>
         </div>
