@@ -14,6 +14,8 @@ dist-ssr
 coverage
 *.local
 build
+deploy
+DEPLOYMENT.md
 
 /cypress/videos/
 /cypress/screenshots/
