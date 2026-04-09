@@ -26,11 +26,10 @@ COPY . .
 RUN mkdir -p build && \
     cd build && \
     cmake .. && \
-    make && \
-    ls -la /app/build/server
+    make
 
 # 验证可执行文件存在
-RUN test -f /app/build/server && echo "Server binary found!" || echo "ERROR: Server binary not found!"
+RUN test -f /app/build/chat_server && echo "Server binary found!" || (echo "ERROR: Server binary not found!" && exit 1)
 
 # 暴露端口（Railway 会自动映射）
 EXPOSE 8080
@@ -39,5 +38,5 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
     CMD curl -f http://localhost:8080 || exit 1
 
-# 启动服务
-CMD ["./build/server"]
+# 启动服务（使用正确的可执行文件名）
+CMD ["./build/chat_server"]
