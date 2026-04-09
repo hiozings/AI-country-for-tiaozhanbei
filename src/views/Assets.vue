@@ -90,8 +90,8 @@
             <div class="space-y-6">
               <div v-for="(items, folderName) in assetFolders" :key="folderName">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ folderName }}</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div v-for="item in items" :key="item.id" class="rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 bg-white">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div v-for="item in items" :key="item.id" class="rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 bg-white">
                     <div class="relative overflow-hidden">
                       <img :src="item.preview" :alt="item.name" class="w-full aspect-square object-cover transition-all duration-300 hover:scale-105 cursor-pointer block">
                     </div>
