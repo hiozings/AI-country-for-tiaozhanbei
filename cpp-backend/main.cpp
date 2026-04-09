@@ -169,6 +169,57 @@ private:
     void processMessage(websocketpp::connection_hdl hdl, const std::string& type, const std::string& content, ApiType apiType) {
         Json::Value response;
 
+        if (type == "generate") {
+            std::cout << "Generate request received: " << content << std::endl;
+
+            if (apiType != API_DOUBAO) {
+                response["type"] = "text";
+                response["content"] = "当前后端仅支持 Doubao 文生图生成。请将 model 设置为 doubao。";
+                response["timestamp"] = Json::Value::UInt64(std::time(nullptr) * 1000);
+                sendMessage(hdl, response);
+                return;
+            }
+
+            if (content.empty()) {
+                response["type"] = "text";
+                response["content"] = "提示词不能为空，请输入描述后重试。";
+                response["timestamp"] = Json::Value::UInt64(std::time(nullptr) * 1000);
+                sendMessage(hdl, response);
+                return;
+            }
+
+            if (m_doubaoApiKey.empty()) {
+                response["type"] = "text";
+                response["content"] = "错误：未设置 ARK_API_KEY 环境变量";
+                response["timestamp"] = Json::Value::UInt64(std::time(nullptr) * 1000);
+                sendMessage(hdl, response);
+                return;
+            }
+
+            sendTypingIndicator(hdl, true);
+            std::cout << "Generating image with prompt: " << content << std::endl;
+            std::string imageBase64 = generateDoubaoImage(content);
+            sendTypingIndicator(hdl, false);
+
+            if (imageBase64.empty()) {
+                response["type"] = "text";
+                response["content"] = "图片生成失败，请稍后重试";
+                response["timestamp"] = Json::Value::UInt64(std::time(nullptr) * 1000);
+                sendMessage(hdl, response);
+            } else {
+                response["type"] = "image";
+                // If generateDoubaoImage returned a URL, send it directly; otherwise assume base64
+                if (imageBase64.rfind("http", 0) == 0) {
+                    response["content"] = imageBase64;
+                } else {
+                    response["content"] = std::string("data:image/png;base64,") + imageBase64;
+                }
+                response["timestamp"] = Json::Value::UInt64(std::time(nullptr) * 1000);
+                sendMessage(hdl, response);
+            }
+            return;
+        }
+
         if (type == "text") {
             std::cout << "Text message: " << content << std::endl;
 
@@ -210,9 +261,13 @@ private:
                         response["timestamp"] = Json::Value::UInt64(std::time(nullptr) * 1000);
                         sendMessage(hdl, response);
                     } else {
-                        // Send generated image
+                        // Send generated image (either URL or base64 data)
                         response["type"] = "image";
-                        response["content"] = "data:image/png;base64," + imageBase64;
+                        if (imageBase64.rfind("http", 0) == 0) {
+                            response["content"] = imageBase64;
+                        } else {
+                            response["content"] = std::string("data:image/png;base64,") + imageBase64;
+                        }
                         response["timestamp"] = Json::Value::UInt64(std::time(nullptr) * 1000);
                         sendMessage(hdl, response);
                     }
@@ -354,7 +409,8 @@ private:
         payload["model"] = "doubao-seedream-5-0-260128";
         payload["prompt"] = prompt;
         payload["size"] = "2K";
-        payload["output_format"] = "png";
+        // Request the API to return a URL (preferred) instead of base64
+        payload["response_format"] = "url"; // 'url' or 'b64_json'
         payload["watermark"] = false;
 
         Json::StreamWriterBuilder writer;
@@ -369,6 +425,9 @@ private:
         curl_easy_setopt(curl, CURLOPT_URL, "https://ark.cn-beijing.volces.com/api/v3/images/generations");
         curl_easy_setopt(curl, CURLOPT_POST, 1L);
         curl_easy_setopt(curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1); // Force HTTP/1.1
+        curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 10L);
+        curl_easy_setopt(curl, CURLOPT_TIMEOUT, 60L);
+        curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
 
         // Set headers
         struct curl_slist *headers = NULL;
@@ -418,14 +477,12 @@ private:
                 std::string imageUrl = root["data"][0]["url"].asString();
                 std::cout << "Generated image URL: " << imageUrl << std::endl;
 
-                // Download the image and convert to base64
-                std::string imageBase64 = downloadImageAsBase64(imageUrl);
-
                 free(chunk.memory);
                 curl_slist_free_all(headers);
                 curl_easy_cleanup(curl);
 
-                return imageBase64;
+                // Return the URL directly; frontend will load it as a normal image URL.
+                return imageUrl;
             }
         }
 

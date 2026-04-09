@@ -66,10 +66,13 @@
                 <textarea v-model="form.prompt" rows="5" class="mt-1 block w-full rounded-xl border border-gray-100 shadow-sm focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500 text-gray-900 px-3 py-2" placeholder="一幅宁静的山景，日落时分，超写实风格..."></textarea>
               </div>
             </div>
-            <div class="flex justify-between items-center mt-4">
-              <button type="button" @click="generateImage" class="bg-[#FF9F1C] text-white px-4 py-2 rounded-xl hover:bg-[#FFB347] hover:scale-105 transition-all duration-200">立即生成</button>
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mt-4">
+              <button type="button" @click="generateImage" :disabled="isGenerating" class="inline-flex items-center justify-center bg-[#FF9F1C] text-white px-4 py-2 rounded-xl hover:bg-[#FFB347] hover:scale-105 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed">
+                {{ isGenerating ? '生成中...' : '立即生成' }}
+              </button>
               <div class="text-sm text-gray-600">剩余点数：250</div>
             </div>
+            <p class="mt-3 text-sm text-orange-600" v-if="statusMessage">{{ statusMessage }}</p>
           </div>
 
         <!-- Generation Form -->
@@ -151,7 +154,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 
 interface GenerationForm {
   model: string
@@ -168,6 +171,115 @@ interface RecentImage {
   description: string
   time: string
 }
+
+const ws = ref<WebSocket | null>(null)
+const statusMessage = ref('')
+const isGenerating = ref(false)
+const pendingPrompt = ref<string | null>(null)
+
+const sendGenerateRequest = (prompt: string) => {
+  if (!ws.value || ws.value.readyState !== WebSocket.OPEN) {
+    pendingPrompt.value = prompt
+    connectWebSocket()
+    statusMessage.value = '正在连接后端，请稍候...'
+    isGenerating.value = true
+    return
+  }
+
+  const payload = {
+    type: 'generate',
+    content: prompt,
+    model: 'doubao'
+  }
+
+  ws.value.send(JSON.stringify(payload))
+  statusMessage.value = '正在生成，请稍候...'
+  isGenerating.value = true
+}
+
+const connectWebSocket = () => {
+  if (ws.value && ws.value.readyState === WebSocket.OPEN) {
+    return
+  }
+
+  // 自动选择 ws 或 wss，使用页面的主机名作为目标主机（若需要可替换为具体主机）
+  const proto = window.location.protocol === 'https:' ? 'wss' : 'ws'
+  const host = window.location.hostname || 'localhost'
+  const url = `${proto}://${host}:8080`
+  console.log('[Generation] connecting websocket to', url)
+
+  try {
+    ws.value = new WebSocket(url)
+  } catch (e) {
+    console.error('[Generation] WebSocket create error', e)
+    statusMessage.value = '无法创建 WebSocket 连接，请检查后端是否可达。'
+    return
+  }
+
+  ws.value.onopen = () => {
+    console.log('[Generation] websocket open')
+    statusMessage.value = '已连接后端，准备生成图片。'
+    if (pendingPrompt.value) {
+      const promptToSend = pendingPrompt.value
+      pendingPrompt.value = null
+      sendGenerateRequest(promptToSend)
+    }
+  }
+
+  ws.value.onmessage = (event: MessageEvent) => {
+    console.log('[Generation] ws message', event.data)
+    try {
+      const data = JSON.parse(event.data)
+      if (data.type === 'typing') {
+        statusMessage.value = data.status ? '正在生成，请稍候...' : '生成完成。'
+        return
+      }
+
+      if (data.type === 'image' && typeof data.content === 'string') {
+        const imageUrl = data.content
+        recentImages.value.unshift({
+          id: Date.now(),
+          url: imageUrl,
+          description: form.value.prompt || 'AI 生成图像',
+          time: '刚刚'
+        })
+        isGenerating.value = false
+        statusMessage.value = '生成成功，已加入最近生成。'
+        return
+      }
+
+      if (data.type === 'text' && typeof data.content === 'string') {
+        statusMessage.value = data.content
+        isGenerating.value = false
+      }
+    } catch (e) {
+      console.error('[Generation] WebSocket message parse error:', e, event.data)
+      statusMessage.value = '收到未知响应。'
+      isGenerating.value = false
+    }
+  }
+
+  ws.value.onerror = () => {
+    statusMessage.value = '后端连接失败，请检查后端是否已启动。'
+    isGenerating.value = false
+  }
+
+  ws.value.onclose = () => {
+    statusMessage.value = '后端连接已关闭。'
+    isGenerating.value = false
+  }
+}
+
+onMounted(() => {
+  connectWebSocket()
+})
+
+onBeforeUnmount(() => {
+  if (ws.value) {
+    ws.value.close()
+    ws.value = null
+  }
+})
 
 const aspectRatios = [
   { value: '1:1', label: '1:1' },
@@ -228,7 +340,11 @@ const recentImages = ref<RecentImage[]>([
 ])
 
 const generateImage = () => {
-  // TODO: Implement image generation logic
-  console.log('Generating image with:', form.value)
+  if (!form.value.prompt.trim()) {
+    statusMessage.value = '请输入生成提示词后再试。'
+    return
+  }
+
+  sendGenerateRequest(form.value.prompt)
 }
 </script>
