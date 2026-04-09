@@ -232,10 +232,21 @@ const connectWebSocket = () => {
     return
   }
 
-  // 自动选择 ws 或 wss，使用页面的主机名作为目标主机（若需要可替换为具体主机）
-  const proto = window.location.protocol === 'https:' ? 'wss' : 'ws'
-  const host = window.location.hostname || 'localhost'
-  const url = `${proto}://${host}:8080`
+  // 从环境变量获取 WebSocket URL，支持生产环境配置
+  // Vite 环境变量必须以 VITE_ 开头
+  const wsUrl = import.meta.env.VITE_WS_URL
+  
+  let url: string
+  if (wsUrl) {
+    // 使用配置的后端 URL
+    url = wsUrl
+  } else {
+    // 开发环境：自动选择 ws 或 wss，使用页面的主机名
+    const proto = window.location.protocol === 'https:' ? 'wss' : 'ws'
+    const host = window.location.hostname || 'localhost'
+    url = `${proto}://${host}:8080`
+  }
+  
   console.log('[Generation] connecting websocket to', url)
 
   try {
