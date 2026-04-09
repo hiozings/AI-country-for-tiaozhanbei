@@ -138,7 +138,7 @@
               <div class="relative group aspect-square">
                 <img :src="image.url" :alt="image.description" class="w-full h-full object-cover hover:scale-105 transition-all duration-300 cursor-pointer">
                 <!-- Download button with glassmorphism effect -->
-                <button class="absolute bottom-4 left-4 right-4 bg-white/30 backdrop-blur-md text-white px-4 py-2 rounded-xl transition-all duration-200 opacity-0 group-hover:opacity-100 hover:bg-white/50 hover:scale-105 font-medium">下载</button>
+                <button @click.stop="downloadImage(image)" class="absolute bottom-4 left-4 right-4 bg-white/30 backdrop-blur-md text-white px-4 py-2 rounded-xl transition-all duration-200 opacity-0 group-hover:opacity-100 hover:bg-white/50 hover:scale-105 font-medium cursor-pointer">下载</button>
               </div>
               <div class="bg-gray-50 p-4">
                 <p class="text-sm text-gray-600 mb-2">{{ image.description }}</p>
@@ -176,9 +176,20 @@ const ws = ref<WebSocket | null>(null)
 const statusMessage = ref('')
 const isGenerating = ref(false)
 const pendingPrompt = ref<string | null>(null)
+// 防止重复调用后端的锁
+const generationInProgress = ref(false)
 
 const sendGenerateRequest = (prompt: string) => {
+  if (generationInProgress.value) {
+    statusMessage.value = '已有生成请求在进行中，请稍候。'
+    return
+  }
+
+  // 标记为正在进行，后续收到结果或错误时清除
+  generationInProgress.value = true
+
   if (!ws.value || ws.value.readyState !== WebSocket.OPEN) {
+    // 存放待发送的提示词，连接建立后会自动发送（仅保留一次）
     pendingPrompt.value = prompt
     connectWebSocket()
     statusMessage.value = '正在连接后端，请稍候...'
@@ -186,15 +197,34 @@ const sendGenerateRequest = (prompt: string) => {
     return
   }
 
+  // 将用户选择的风格预设追加到提示词中
+  const stylePrompt = getStylePrompt(form.value.style)
+  const finalPrompt = stylePrompt ? `${prompt}，风格：${stylePrompt}` : prompt
+
   const payload = {
     type: 'generate',
-    content: prompt,
+    content: finalPrompt,
     model: 'doubao'
   }
 
   ws.value.send(JSON.stringify(payload))
   statusMessage.value = '正在生成，请稍候...'
   isGenerating.value = true
+}
+
+// 风格映射：将选项值转换为人类可读的风格描述，发送给后端作为提示词的一部分
+const stylePresets: Record<string, string> = {
+  realism: '超写实、高清、自然光照、丰富细节',
+  art: '艺术化、笔触感强、色彩丰富',
+  anime: '日式动漫风格、清晰线条、鲜明色块',
+  '3d': '3D 渲染、光线追踪、细致材质、景深',
+  oil: '油画风格、厚涂笔触、暖色调、画布质感',
+  watercolor: '水彩风格、柔和边缘、淡彩、纸张纹理'
+}
+
+const getStylePrompt = (styleKey: string) => {
+  if (!styleKey) return ''
+  return stylePresets[styleKey] || ''
 }
 
 const connectWebSocket = () => {
@@ -244,6 +274,7 @@ const connectWebSocket = () => {
           time: '刚刚'
         })
         isGenerating.value = false
+        generationInProgress.value = false
         statusMessage.value = '生成成功，已加入最近生成。'
         return
       }
@@ -251,22 +282,26 @@ const connectWebSocket = () => {
       if (data.type === 'text' && typeof data.content === 'string') {
         statusMessage.value = data.content
         isGenerating.value = false
+        generationInProgress.value = false
       }
     } catch (e) {
       console.error('[Generation] WebSocket message parse error:', e, event.data)
       statusMessage.value = '收到未知响应。'
       isGenerating.value = false
+      generationInProgress.value = false
     }
   }
 
   ws.value.onerror = () => {
     statusMessage.value = '后端连接失败，请检查后端是否已启动。'
     isGenerating.value = false
+    generationInProgress.value = false
   }
 
   ws.value.onclose = () => {
     statusMessage.value = '后端连接已关闭。'
     isGenerating.value = false
+    generationInProgress.value = false
   }
 }
 
@@ -338,6 +373,43 @@ const recentImages = ref<RecentImage[]>([
     time: '1周前'
   }
 ])
+
+// 下载图片到本地（支持 data URL 和远程 URL）
+const downloadImage = async (image: RecentImage) => {
+  try {
+    const url = image.url
+    const filename = `ai-image-${image.id}.jpg`
+
+    // data URL 直接下载
+    if (url.startsWith('data:')) {
+      const a = document.createElement('a')
+      a.href = url
+      a.download = filename
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      return
+    }
+
+    // 远程图片：fetch 成为 blob，再构建对象 URL 下载，解决跨域下载问题（前提是图片允许跨域）
+    const resp = await fetch(url)
+    if (!resp.ok) throw new Error('网络请求失败')
+    const blob = await resp.blob()
+    const blobUrl = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = blobUrl
+    a.download = filename
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    // 释放临时 URL
+    URL.revokeObjectURL(blobUrl)
+  } catch (err) {
+    console.error('下载失败，使用回退打开：', err)
+    // 回退：在新标签页打开图片（用户可右键另存）
+    window.open(image.url, '_blank')
+  }
+}
 
 const generateImage = () => {
   if (!form.value.prompt.trim()) {
